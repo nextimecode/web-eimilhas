@@ -5,10 +5,9 @@ import Footer from '../footer'
 import { NavLinkProps } from '../../../types/types'
 import { Box } from '@chakra-ui/react'
 import NextWhatsIcon from '../../atoms/nextWhatsIcon'
-import Link from 'next/link'
 
 type Props = {
-  children: unknown,
+  children: React.ReactNode,
   menuLinks: Record<string, NavLinkProps>[]
 }
 
@@ -64,11 +63,13 @@ const PageTemplate = ({
           bottom="20px"
           right="20px"
         >
-          <Link href={'https://api.whatsapp.com/send?phone=5531988715354&text=Ol%C3%A1,%20Eimilhas!'}>
-            <a target="_blank" rel="noreferrer">
-              <NextWhatsIcon />
-            </a>
-          </Link>
+          <a
+            href="https://api.whatsapp.com/send?phone=5531988715354&text=Ol%C3%A1,%20Eimilhas!"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <NextWhatsIcon />
+          </a>
         </Box>
       </div>
     </>
