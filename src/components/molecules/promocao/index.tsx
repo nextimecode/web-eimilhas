@@ -3,6 +3,7 @@ import { PromocaoProps } from '../../../types/types'
 import Preco from '../../atoms/preco'
 import Title from '../../atoms/title'
 import { whatsappUrl } from '../../../pages/index'
+import { buildWhatsappLink } from '../../organisms/encontre/format'
 
 type Props = {
     promocao: PromocaoProps
@@ -11,8 +12,8 @@ type Props = {
 const Promocao = ({
   promocao
 }: Props) => {
-  const mensagem = `Olá, EiMilhas!%0AGostaria de solicitar propostas de passagens.%0ADestino: *${promocao.localEspecifico}*`
-  const linkMensagem = `${whatsappUrl}&text=${mensagem}`
+  const mensagem = `Olá, EiMilhas!\nGostaria de solicitar propostas de passagens.\nDestino: *${promocao.localEspecifico}*`
+  const linkMensagem = buildWhatsappLink(whatsappUrl, mensagem)
 
   return (
     <a

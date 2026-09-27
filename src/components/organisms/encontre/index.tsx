@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import Title from '../../atoms/title'
 import DatePicker from 'react-datepicker'
 import FormularioLabel from '../../atoms/formularioLabel'
@@ -8,57 +8,47 @@ import PlaneSeparator from '../../molecules/planeSeparator'
 import { Collapsible } from '../../molecules/collabsible'
 import { whatsappUrl } from '../../../pages/index'
 import { airports } from './airports'
+import { Airport, FormData, buildMensagem, buildWhatsappLink, filtrarAeroportos, formatAirport, paisPt } from './format'
 import 'react-datepicker/dist/react-datepicker.css'
 
 const Encontre = () => {
   const urlWallpaper = 'assets/img/plane3.jpg'
   const now = new Date()
 
-  const initialData = {
+  const initialData: FormData = {
     adultos: 1,
     criancas: 0,
     bebes: 0,
-    origem: '',
-    destino: '',
+    origem: null,
+    destino: null,
     ida: now,
-    volta: undefined,
+    volta: null,
     soIda: false
   }
 
-  const [formReady, setFormReady] = useState(false)
+  const [formData, setFormData] = useState<FormData>({ ...initialData })
 
-  const [formData, setFormData] = useState({ ...initialData })
-
-  const estaPronto = () => {
-    (formData.origem === '' || formData.destino === '' || formData.ida === null || formData.ida === undefined)
-      ? setFormReady(false)
-      : (!formData.soIda && (formData.volta === null || formData.volta === undefined) ? setFormReady(false) : setFormReady(true))
-  }
+  const formReady = !!formData.origem && !!formData.destino && !!formData.ida && (formData.soIda || !!formData.volta)
 
   const handleInputChange = (event) => {
     const target = event.target
     const value = target.type === 'checkbox' ? target.checked : target.value
     const name = target.name
 
-    setFormData({
-      ...formData,
-      [name]: value
+    setFormData((f) => ({ ...f, [name]: value }))
+  }
+
+  const handleDataChange = (data: Date | null, trecho: 'ida' | 'volta') => {
+    setFormData((f) => {
+      const novo = { ...f, [trecho]: data }
+      // Volta antes da nova ida deixa de ser válida
+      if (trecho === 'ida' && data && f.volta && f.volta < data) novo.volta = null
+      return novo
     })
   }
 
-  const handleDataChange = (event, trecho) => {
-    if (trecho === 'ida') {
-      setFormData({
-        ...formData,
-        ida: event
-      })
-    }
-    if (trecho === 'volta') {
-      setFormData({
-        ...formData,
-        volta: event
-      })
-    }
+  const handleAeroportoChange = (campo: 'origem' | 'destino', aeroporto: Airport | null) => {
+    setFormData((f) => ({ ...f, [campo]: aeroporto }))
   }
 
   const decrementarPessoa = (event, field) => {
@@ -66,17 +56,17 @@ const Encontre = () => {
     switch (field) {
     case 'adultos':
       if (formData.adultos > 1) {
-        setFormData({ ...formData, adultos: formData.adultos - 1 })
+        setFormData((f) => ({ ...f, adultos: f.adultos - 1 }))
       }
       break
     case 'criancas':
       if (formData.criancas > 0) {
-        setFormData({ ...formData, criancas: formData.criancas - 1 })
+        setFormData((f) => ({ ...f, criancas: f.criancas - 1 }))
       }
       break
     case 'bebes':
       if (formData.bebes > 0) {
-        setFormData({ ...formData, bebes: formData.bebes - 1 })
+        setFormData((f) => ({ ...f, bebes: f.bebes - 1 }))
       }
       break
     default:
@@ -88,13 +78,13 @@ const Encontre = () => {
     event.preventDefault()
     switch (field) {
     case 'adultos':
-      setFormData({ ...formData, adultos: formData.adultos + 1 })
+      setFormData((f) => ({ ...f, adultos: f.adultos + 1 }))
       break
     case 'criancas':
-      setFormData({ ...formData, criancas: formData.criancas + 1 })
+      setFormData((f) => ({ ...f, criancas: f.criancas + 1 }))
       break
     case 'bebes':
-      setFormData({ ...formData, bebes: formData.bebes + 1 })
+      setFormData((f) => ({ ...f, bebes: f.bebes + 1 }))
       break
     default:
       break
@@ -133,6 +123,40 @@ const Encontre = () => {
     )
   }
 
+  const campoAeroporto = (campo: 'origem' | 'destino', placeholder: string) => (
+    <Autocomplete
+      id={`busca-${campo}`}
+      options={airports}
+      forcePopupIcon={false}
+      disableClearable
+      value={formData[campo]}
+      onChange={(_e, aeroporto: Airport | null) => handleAeroportoChange(campo, aeroporto)}
+      getOptionLabel={formatAirport}
+      getOptionSelected={(opcao, valor) => opcao === valor}
+      filterOptions={filtrarAeroportos}
+      renderOption={(a: Airport) => (
+        <div className="text-start">
+          <div className="fw-bold">{formatAirport(a)}</div>
+          <small className="text-muted">
+            {a.IATA === 'TODOS' ? paisPt(a) : `${a.name.trim()} · ${paisPt(a)}`}
+          </small>
+        </div>
+      )}
+      noOptionsText="Nenhum aeroporto encontrado"
+      openText="Abrir"
+      closeText="Fechar"
+      renderInput={(params) => (
+        <TextField
+          {...params}
+          type="text"
+          name={campo}
+          placeholder={placeholder}
+          className="m-auto w-100 my-1"
+        />
+      )}
+    />
+  )
+
   // const btnTrocarRota =
   // (
   //   <button
@@ -150,23 +174,12 @@ const Encontre = () => {
       onClick={
         (e) => {
           e.preventDefault()
-          const origem = `%0AOrigem: *${formData.origem}*`
-          const destino = `%0ADestino: *${formData.destino}*`
-          const ida = `%0AIda: *${formData.ida.toLocaleDateString('pt-Br')}*`
-          const volta = formData.soIda ? '' : `%0AVolta: *${formData.volta.toLocaleDateString('pt-Br')}*`
-          const adultos = `%0APassageiros: *${formData.adultos} adulto(s)*`
-          const criancas = formData.criancas > 0 ? `, *${formData.criancas} criança(s)*` : ''
-          const bebes = formData.bebes > 0 ? `, *${formData.bebes} criança(s)*` : ''
-
-          const mensagem = `Olá, EiMilhas!%0AGostaria de solicitar propostas de passagens.${origem}${destino}${ida}${volta}${adultos}${criancas}${bebes}`
-          const linkMensagem = `${whatsappUrl}&text=${mensagem}`
-          window.open(linkMensagem, '_blank')
+          if (!formReady) return
+          window.open(buildWhatsappLink(whatsappUrl, buildMensagem(formData)), '_blank')
         }
       }
     >Buscar passagens</button>
   )
-
-  useEffect(() => { setFormData(formData) }, [formData])
 
   return (
 
@@ -211,10 +224,7 @@ const Encontre = () => {
                         name="soIda"
                         checked={formData.soIda}
                         onChange={
-                          (e) => {
-                            handleInputChange(e)
-                            estaPronto()
-                          }
+                          (e) => handleInputChange(e)
                         }
                         className="m-auto"
                       />
@@ -228,10 +238,7 @@ const Encontre = () => {
                       selected={formData.ida}
                       dateFormat="dd/MM/yyyy"
                       onChange={
-                        (e) => {
-                          handleDataChange(e, 'ida')
-                          estaPronto()
-                        }
+                        (d) => handleDataChange(d as Date | null, 'ida')
                       }
                       minDate={now}
                       className="m-auto w-100 my-1 text-center d-block"
@@ -246,12 +253,9 @@ const Encontre = () => {
                         selected={formData.volta}
                         dateFormat="dd/MM/yyyy"
                         onChange={
-                          (e) => {
-                            handleDataChange(e, 'volta')
-                            estaPronto()
-                          }
+                          (d) => handleDataChange(d as Date | null, 'volta')
                         }
-                        minDate={now}
+                        minDate={formData.ida ?? now}
                         className="m-auto w-100 my-1 text-center"
                       />
                     </div>
@@ -262,53 +266,11 @@ const Encontre = () => {
                 <div className="row mb-3 position-relative">
 
                   <div className="col-sm-12 col-md-6 text-center">
-                    <Autocomplete id="busca-origem"
-                      freeSolo
-                      disableClearable
-                      options={airports.map((a) => `(${a.IATA}) ${a.city}, ${a.country}`)}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          InputProps={{ ...params.InputProps }}
-                          type="text"
-                          name="origem"
-                          placeholder="Origem"
-                          value={formData.origem}
-                          className="m-auto w-100 my-1"
-                          onSelect={
-                            (e) => {
-                              handleInputChange(e)
-                              estaPronto()
-                            }
-                          }
-                        />
-                      )}
-                    />
+                    {campoAeroporto('origem', 'Origem')}
                   </div>
 
                   <div className="col-sm-12 col-md-6 text-center">
-                    <Autocomplete id="busca-destino"
-                      freeSolo
-                      disableClearable
-                      options={airports.map((a) => `${a.city} (${a.IATA}), ${a.country}`)}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          InputProps={{ ...params.InputProps }}
-                          type="text"
-                          name="destino"
-                          placeholder="Destino"
-                          className="m-auto w-100 my-1"
-                          value={formData.destino}
-                          onSelect={
-                            (e) => {
-                              handleInputChange(e)
-                              estaPronto()
-                            }
-                          }
-                        />
-                      )}
-                    />
+                    {campoAeroporto('destino', 'Destino')}
                   </div>
 
                   {/* {btnTrocarRota} */}
@@ -328,10 +290,7 @@ const Encontre = () => {
                             className="text-center w-100"
                             value={formData.adultos}
                             onChange={
-                              (e) => {
-                                handleInputChange(e)
-                                estaPronto()
-                              }
+                              (e) => handleInputChange(e)
                             }
                             disabled={true}
                           />
@@ -356,10 +315,7 @@ const Encontre = () => {
                             className="text-center w-100"
                             value={formData.criancas}
                             onChange={
-                              (e) => {
-                                handleInputChange(e)
-                                estaPronto()
-                              }
+                              (e) => handleInputChange(e)
                             }
                             disabled={true}
                           />
@@ -384,10 +340,7 @@ const Encontre = () => {
                             className="text-center w-100"
                             value={formData.bebes}
                             onChange={
-                              (e) => {
-                                handleInputChange(e)
-                                estaPronto()
-                              }
+                              (e) => handleInputChange(e)
                             }
                             disabled={true}
                           />
