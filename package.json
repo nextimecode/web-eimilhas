@@ -2,6 +2,9 @@
   "name": "eimilhas",
   "version": "0.10.0",
   "private": true,
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "dev": "next dev --port 3001",
     "build": "next build",
@@ -18,33 +21,28 @@
     "@hapi/cryptiles": "^5.1.0",
     "@material-ui/core": "^4.11.4",
     "@material-ui/lab": "^4.0.0-alpha.58",
-    "@next/bundle-analyzer": "^10.0.2",
-    "@zeit/next-css": "^1.0.1",
-    "@zeit/next-sass": "^1.0.1",
+    "@next/bundle-analyzer": "^14.2",
     "bootstrap": "^5.0.0-beta2",
     "framer-motion": "^4",
-    "html-webpack-include-assets-plugin": "^2.0.0",
     "jquery": "3.5.0",
-    "next": "10.0.2",
-    "next-images": "^1.6.2",
+    "next": "^14.2",
     "popper.js": "^1.16.1",
     "pre-push": "^0.1.1",
-    "react": "^17.0.1",
+    "react": "^18.3",
     "react-bootstrap": "^1.4.0",
     "react-datepicker": "^3.7.0",
-    "react-dom": "^17.0.1",
+    "react-dom": "^18.3",
     "react-multi-carousel": "^2.6.2",
-    "sharp": "^0.30.3",
     "styled-components": "^5.2.1"
   },
   "devDependencies": {
     "@babel/core": "^7.12.7",
-    "@types/node": "^14.14.9",
-    "@types/react": "^17.0.0",
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
     "@types/styled-components": "^5.1.4",
     "@typescript-eslint/eslint-plugin": "^4.8.1",
     "@typescript-eslint/parser": "^4.8.1",
-    "babel-plugin-inline-react-svg": "^1.1.2",
     "eslint": "^7.14.0",
     "eslint-config-prettier": "^6.15.0",
     "eslint-config-standard": "^16.0.2",
@@ -55,24 +53,24 @@
     "eslint-plugin-react": "^7.21.5",
     "eslint-plugin-react-hooks": "^4.2.0",
     "eslint-plugin-standard": "^4.0.1",
-    "html-webpack-plugin": "^4.3.0",
-    "next-purgecss": "^4.0.0",
     "pre-commit": "~1.2.2",
     "prettier": "^2.2.0",
-    "react-is": "^17.0.1",
+    "react-is": "^18",
     "sass": "^1.32.8",
-    "sass-loader": "~8.0.2",
     "stylelint": "~13.7.1",
     "stylelint-config-recommended-scss": "~4.2.0",
     "stylelint-config-standard-scss": "~1.1.0",
     "stylelint-scss": "~3.18.0",
-    "typescript": "^4.1.2",
-    "webpack": "^4.0.0"
+    "typescript": "~4.9.5"
   },
   "pre-commit": [
     "precommit"
   ],
   "pre-push": [
     "prepush"
-  ]
+  ],
+  "resolutions": {
+    "@types/react": "^18.3.0",
+    "@types/react-dom": "^18.3.0"
+  }
 }

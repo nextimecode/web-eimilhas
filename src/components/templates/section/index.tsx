@@ -2,7 +2,7 @@ import React from 'react'
 import Separator from '../../atoms/separator'
 
 type Props = {
-    children: unknown,
+    children: React.ReactNode,
     id?: string,
     bgUrl?: string,
     bgColor?: string,

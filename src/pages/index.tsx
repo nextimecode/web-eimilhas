@@ -411,7 +411,7 @@ const frequentQuestions = [
       label: 'Taxas de cancelamento e remarcação.',
       answer:
         <>
-          <p>
+          <div className="mb-3">
             <b>TAP:</b>
             <ul>
               <li>
@@ -424,8 +424,8 @@ const frequentQuestions = [
                 Vôos alterados ou cancelados pela companhia, a remarcação ou o cancelamento são gratuitos, porém o reembolso das taxas se perde €25 euros da taxa de emissão por trecho. e as taxas aeroportuárias são reembolsadas em algumas situações em até 12 meses.
               </li>
             </ul>
-          </p>
-          <p>
+          </div>
+          <div className="mb-3">
             <b>GOL:</b>
             <ul>
               <li>
@@ -441,8 +441,8 @@ const frequentQuestions = [
                 Vôos alterados ou cancelados pela companhia, a remarcação ou o cancelamento são gratuitos. As taxas aeroportuárias são reembolsadas em algumas situações em até 12 meses.
               </li>
             </ul>
-          </p>
-          <p>
+          </div>
+          <div className="mb-3">
             <b>AZUL:</b>
             <ul>
               <li>
@@ -458,8 +458,8 @@ const frequentQuestions = [
                 Vôos alterados ou cancelados pela companhia, a remarcação ou o cancelamento são gratuitos, porém o reembolso das taxas se perde r$ 27,90 da taxa de emissão por trecho. e as taxas aeroportuárias são reembolsadas em algumas situações em até 12 meses.
               </li>
             </ul>
-          </p>
-          <p>
+          </div>
+          <div className="mb-3">
             <b>LATAM:</b>
             <ul>
               <li>
@@ -481,7 +481,7 @@ const frequentQuestions = [
                 Todas as taxas internacionais são considerados o dólar ou o euro turismo + iof (6,38%) + 5% da variação cambial. Pagamento no cartão de crédito tem um acréscimo de 5% do preço final.
               </li>
             </ul>
-          </p>
+          </div>
         </>
     }
   },
@@ -557,14 +557,14 @@ const frequentQuestions = [
           <p>
             A inclusão ou a exclusão de nomes não são permitidas, mas casos específicos, como divórcio ou casamento, podem ser avaliados pelas companhias aéreas. Vale lembrar que as <span className="fw-bold">passagens aéreas são pessoais e intransferíveis</span>.
           </p>
-          <p>
+          <div className="mb-3">
             Para fazer a solicitação junto às aéreas, <span className="fw-bold">precisamos dos seguintes documentos</span>
             <ul>
               <li>Cópia do documento de identidade do viajante, se for um voo nacional.</li>
               <li>Cópia da 1ª página e do verso do passaporte, se for um voo internacional.</li>
               <li>Cópia da Certidão de Casamento ou de Nascimento, quando a alteração de nome.</li>
             </ul>
-          </p>
+          </div>
         </>
     }
   },
